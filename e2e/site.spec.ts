@@ -10,6 +10,22 @@ async function scrollThrough(page: Page) {
   }
 }
 
+/** Elementos de <main> que terminaram a animação com blur/deslocamento/opacidade residuais no style inline. */
+async function animationLeftovers(page: Page) {
+  return page.evaluate(() =>
+    [...document.querySelectorAll<HTMLElement>("main *")]
+      // Elementos escondidos (display:none, ex.: colunas da tabela no mobile) nunca entram na tela.
+      .filter((el) => el.getClientRects().length > 0)
+      .filter((el) => {
+        const { filter, transform, opacity } = el.style;
+        const stuckFilter = filter !== "" && filter !== "none";
+        const stuckTransform = transform !== "" && transform !== "none";
+        return stuckFilter || stuckTransform || opacity === "0";
+      })
+      .map((el) => `${el.tagName.toLowerCase()}[style="${el.getAttribute("style")}"]`),
+  );
+}
+
 test.describe("página de futsal", () => {
   test("mostra o hero, o próximo jogo e os números da temporada", async ({ page }) => {
     await page.goto("/");
@@ -113,6 +129,14 @@ test.describe("página de futsal", () => {
       .toBeGreaterThan(0.2);
   });
 
+  test("sem movimento reduzido também não sobra blur nem deslocamento depois da entrada", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await scrollThrough(page);
+    await expect.poll(() => animationLeftovers(page)).toEqual([]);
+  });
+
   test("rota inexistente mostra a página 404", async ({ page }) => {
     const response = await page.goto("/nao-existe");
     expect(response?.status()).toBe(404);
@@ -128,13 +152,8 @@ test.describe("movimento reduzido", () => {
     await scrollThrough(page);
     await expect(page.getByRole("heading", { name: "Jogos e resultados" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Classificação" })).toBeVisible();
-    const hidden = await page.evaluate(
-      () =>
-        [...document.querySelectorAll<HTMLElement>("main *")].filter(
-          (el) => el.style.opacity === "0",
-        ).length,
-    );
-    expect(hidden).toBe(0);
+    // Regressão: com movimento reduzido o SSR trazia blur(4px)/translateY(8px) que nunca eram limpos.
+    await expect.poll(() => animationLeftovers(page)).toEqual([]);
     const duration = await page.evaluate(
       () =>
         getComputedStyle(document.querySelector(".skeleton, a, button") as Element)

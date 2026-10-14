@@ -1,8 +1,8 @@
 "use client";
 
 import { motion, useReducedMotion } from "motion/react";
-import type { ReactNode } from "react";
-import { reveal, revealReduced, staggerDelay, viewport } from "@/lib/motion";
+import { type ReactNode, useMemo } from "react";
+import { reveal, staggerDelay, viewport } from "@/lib/motion";
 
 type RevealProps = {
   children: ReactNode;
@@ -27,16 +27,20 @@ export function Reveal({
 }: RevealProps) {
   const reduce = useReducedMotion();
   const Component = motion[as];
-  const variants = reduce ? revealReduced : reveal;
-  const stagger = staggerDelay(index) + delay;
+  // A preferência só entra em `custom` (transição); as variantes são sempre as mesmas, então o
+  // HTML do servidor e o cliente concordam e nada fica preso no estado inicial.
+  const custom = useMemo(
+    () => ({ reduced: !!reduce, delay: staggerDelay(index) + delay }),
+    [reduce, index, delay],
+  );
 
   return (
     <Component
       className={className}
-      variants={variants}
+      variants={reveal}
+      custom={custom}
       initial="hidden"
       {...(on === "view" ? { whileInView: "visible", viewport } : { animate: "visible" })}
-      transition={stagger ? { delay: stagger } : undefined}
     >
       {children}
     </Component>
