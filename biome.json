@@ -1,0 +1,18 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.5.15/schema.json",
+  "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
+  "files": {
+    "includes": [
+      "**",
+      "!**/.next",
+      "!**/coverage",
+      "!**/reports",
+      "!**/next-env.d.ts",
+      "!**/.stryker-tmp"
+    ]
+  },
+  "formatter": { "indentStyle": "space", "indentWidth": 2, "lineWidth": 100 },
+  "assist": { "actions": { "source": { "organizeImports": "on" } } },
+  "linter": { "enabled": true, "rules": { "preset": "none" } },
+  "css": { "parser": { "tailwindDirectives": true } }
+}

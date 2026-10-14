@@ -1,0 +1,18 @@
+name: Nova função
+description: Registrar uma tarefa do tipo "Nova função"
+title: "[Nova função] "
+labels: ["feature"]
+body:
+  - type: textarea
+    id: contexto
+    attributes:
+      label: Contexto
+      description: Por que isso é necessário?
+    validations: { required: true }
+  - type: textarea
+    id: escopo
+    attributes:
+      label: Escopo / critérios de aceite
+      description: Liste em checkboxes.
+      value: "- [ ] "
+    validations: { required: true }
