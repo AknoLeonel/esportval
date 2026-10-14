@@ -1,12 +1,64 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+import { Barlow, Barlow_Condensed } from "next/font/google";
+import { Footer } from "@/components/layout/Footer";
+import { Header } from "@/components/layout/Header";
+import { Observability } from "@/components/observability/Observability";
+import { MotionProvider } from "@/components/ui/Providers";
+import { nav, site } from "@/data/site";
 import "./globals.css";
 
-export const metadata: Metadata = { title: "Esportval Futsal" };
+const display = Barlow_Condensed({
+  subsets: ["latin"],
+  weight: ["500", "600", "700", "800"],
+  variable: "--font-barlow-condensed",
+  display: "swap",
+});
+
+const sans = Barlow({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-barlow",
+  display: "swap",
+});
+
+export const metadata: Metadata = {
+  metadataBase: new URL(site.url),
+  title: { default: `${site.name} — ${site.tagline}`, template: `%s · ${site.name}` },
+  description: site.description,
+  applicationName: site.name,
+  openGraph: {
+    type: "website",
+    locale: "pt_BR",
+    siteName: site.name,
+    title: site.name,
+    description: site.description,
+  },
+  twitter: { card: "summary_large_image", title: site.name, description: site.description },
+  alternates: { canonical: "/" },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#07090d",
+  colorScheme: "dark",
+};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-BR">
-      <body>{children}</body>
+    <html lang="pt-BR" className={`${display.variable} ${sans.variable}`}>
+      <body>
+        <MotionProvider>
+          <a
+            href="#conteudo"
+            className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[80] focus:rounded-full focus:bg-brand focus:px-5 focus:py-2 focus:font-semibold focus:text-ink-950"
+          >
+            Pular para o conteúdo
+          </a>
+          <Header nav={nav} cta={{ href: "#contato", label: "Quero treinar" }} />
+          <main id="conteudo">{children}</main>
+          <Footer nav={nav} instagram={site.instagram} tagline={site.tagline} />
+          <Observability />
+        </MotionProvider>
+      </body>
     </html>
   );
 }
