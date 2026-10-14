@@ -1,6 +1,13 @@
 "use client";
 
-import { animate, useInView, useReducedMotion } from "motion/react";
+import {
+  animate,
+  motion,
+  useInView,
+  useMotionValue,
+  useReducedMotion,
+  useTransform,
+} from "motion/react";
 import { useEffect, useRef } from "react";
 import { duration, ease } from "@/lib/motion";
 
@@ -9,24 +16,22 @@ export function CountUp({ value, suffix = "" }: { value: number; suffix?: string
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, amount: 0.6 });
   const reduce = useReducedMotion();
+  const count = useMotionValue(value);
+  // O texto é um MotionValue: o Motion atualiza o nó sem brigar com o React (nada de textContent).
+  const text = useTransform(count, (latest) => `${Math.round(latest)}${suffix}`);
 
   useEffect(() => {
-    const node = ref.current;
-    if (!node || !inView || reduce) return;
-    const controls = animate(0, value, {
-      duration: duration.slow * 2,
-      ease: ease.out,
-      onUpdate: (latest) => {
-        node.textContent = `${Math.round(latest)}${suffix}`;
-      },
-    });
+    if (!inView || reduce) {
+      count.set(value);
+      return;
+    }
+    const controls = animate(count, [0, value], { duration: duration.slow * 2, ease: ease.out });
     return () => controls.stop();
-  }, [inView, reduce, value, suffix]);
+  }, [inView, reduce, value, count]);
 
   return (
-    <span ref={ref} className="tabular-nums">
-      {value}
-      {suffix}
-    </span>
+    <motion.span ref={ref} className="tabular-nums">
+      {text}
+    </motion.span>
   );
 }

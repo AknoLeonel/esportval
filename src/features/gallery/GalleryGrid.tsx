@@ -1,11 +1,11 @@
 "use client";
 
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { LazyImage } from "@/components/ui/LazyImage";
 import { Reveal } from "@/components/ui/Reveal";
-import { duration, ease } from "@/lib/motion";
+import { duration, ease, reveal } from "@/lib/motion";
 import type { GalleryItem } from "@/lib/types";
 
 export function GalleryGrid({ items }: { items: GalleryItem[] }) {
@@ -13,6 +13,7 @@ export function GalleryGrid({ items }: { items: GalleryItem[] }) {
   const trigger = useRef<HTMLElement | null>(null);
   const closeButton = useRef<HTMLButtonElement>(null);
   const isOpen = openIndex !== null;
+  const reduce = useReducedMotion();
   // O portal só existe no navegador; evita divergência na hidratação.
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
@@ -99,10 +100,11 @@ export function GalleryGrid({ items }: { items: GalleryItem[] }) {
               >
                 <motion.figure
                   key={current.id}
-                  initial={{ opacity: 0, scale: 0.96, filter: "blur(4px)" }}
-                  animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-                  exit={{ opacity: 0, scale: 0.98 }}
-                  transition={{ duration: duration.base, ease: ease.out }}
+                  variants={reveal}
+                  custom={{ reduced: !!reduce }}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
                   className="w-full max-w-4xl"
                   onClick={(event) => event.stopPropagation()}
                 >
