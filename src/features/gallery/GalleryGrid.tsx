@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { LazyImage } from "@/components/ui/LazyImage";
 import { Reveal } from "@/components/ui/Reveal";
 import { duration, ease } from "@/lib/motion";
@@ -12,6 +13,9 @@ export function GalleryGrid({ items }: { items: GalleryItem[] }) {
   const trigger = useRef<HTMLElement | null>(null);
   const closeButton = useRef<HTMLButtonElement>(null);
   const isOpen = openIndex !== null;
+  // O portal só existe no navegador; evita divergência na hidratação.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   const close = useCallback(() => {
     setOpenIndex(null);
@@ -77,76 +81,80 @@ export function GalleryGrid({ items }: { items: GalleryItem[] }) {
         ))}
       </ul>
 
-      <AnimatePresence>
-        {current && (
-          <motion.div
-            key="lightbox"
-            role="dialog"
-            aria-modal="true"
-            aria-label={`Galeria: ${current.caption}`}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: duration.base, ease: ease.out }}
-            className="fixed inset-0 z-[70] grid place-items-center bg-ink-950/90 p-4 backdrop-blur-sm"
-            onClick={close}
-          >
-            <motion.figure
-              key={current.id}
-              initial={{ opacity: 0, scale: 0.96, filter: "blur(4px)" }}
-              animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-              exit={{ opacity: 0, scale: 0.98 }}
-              transition={{ duration: duration.base, ease: ease.out }}
-              className="w-full max-w-4xl"
-              onClick={(event) => event.stopPropagation()}
-            >
-              <LazyImage
-                src={current.src}
-                alt={current.alt}
-                width={1200}
-                height={800}
-                unoptimized
-                eager
-                wrapperClassName="rounded-3xl ring-1 ring-white/10"
-                className="h-auto w-full"
-              />
-              <figcaption className="mt-4 text-center font-display text-2xl font-bold tracking-wide uppercase">
-                {current.caption}
-                <span className="ml-3 text-base text-fg-subtle tabular-nums">
-                  {(openIndex ?? 0) + 1}/{items.length}
-                </span>
-              </figcaption>
-            </motion.figure>
-
-            <button
-              ref={closeButton}
-              type="button"
-              onClick={(event) => {
-                event.stopPropagation();
-                close();
-              }}
-              aria-label="Fechar"
-              className="absolute top-4 right-4 grid size-12 place-items-center rounded-full bg-ink-800 text-2xl ring-1 ring-white/10 transition-[transform,background-color] duration-150 hover:bg-ink-600 active:scale-[0.95]"
-            >
-              ×
-            </button>
-            {(["prev", "next"] as const).map((direction) => (
-              <button
-                key={direction}
-                type="button"
-                onClick={(event) => {
-                  event.stopPropagation();
-                  step(direction === "next" ? 1 : -1);
-                }}
-                aria-label={direction === "next" ? "Próxima foto" : "Foto anterior"}
-                className={`absolute top-1/2 grid size-12 -translate-y-1/2 place-items-center rounded-full bg-ink-800 text-2xl ring-1 ring-white/10 transition-[transform,background-color] duration-150 hover:bg-ink-600 active:scale-[0.95] ${direction === "next" ? "right-4" : "left-4"}`}
+      {mounted &&
+        createPortal(
+          <AnimatePresence>
+            {current && (
+              <motion.div
+                key="lightbox"
+                role="dialog"
+                aria-modal="true"
+                aria-label={`Galeria: ${current.caption}`}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: duration.base, ease: ease.out }}
+                className="fixed inset-0 z-[70] grid place-items-center bg-ink-950/90 p-4 backdrop-blur-sm"
+                onClick={close}
               >
-                {direction === "next" ? "›" : "‹"}
-              </button>
-            ))}
-          </motion.div>
+                <motion.figure
+                  key={current.id}
+                  initial={{ opacity: 0, scale: 0.96, filter: "blur(4px)" }}
+                  animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+                  exit={{ opacity: 0, scale: 0.98 }}
+                  transition={{ duration: duration.base, ease: ease.out }}
+                  className="w-full max-w-4xl"
+                  onClick={(event) => event.stopPropagation()}
+                >
+                  <LazyImage
+                    src={current.src}
+                    alt={current.alt}
+                    width={1200}
+                    height={800}
+                    unoptimized
+                    eager
+                    wrapperClassName="rounded-3xl ring-1 ring-white/10"
+                    className="h-auto w-full"
+                  />
+                  <figcaption className="mt-4 text-center font-display text-2xl font-bold tracking-wide uppercase">
+                    {current.caption}
+                    <span className="ml-3 text-base text-fg-subtle tabular-nums">
+                      {(openIndex ?? 0) + 1}/{items.length}
+                    </span>
+                  </figcaption>
+                </motion.figure>
+
+                <button
+                  ref={closeButton}
+                  type="button"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    close();
+                  }}
+                  aria-label="Fechar"
+                  className="absolute top-4 right-4 grid size-12 place-items-center rounded-full bg-ink-800 text-2xl ring-1 ring-white/10 transition-[transform,background-color] duration-150 hover:bg-ink-600 active:scale-[0.95]"
+                >
+                  ×
+                </button>
+                {(["prev", "next"] as const).map((direction) => (
+                  <button
+                    key={direction}
+                    type="button"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      step(direction === "next" ? 1 : -1);
+                    }}
+                    aria-label={direction === "next" ? "Próxima foto" : "Foto anterior"}
+                    className={`absolute top-1/2 grid size-12 -translate-y-1/2 place-items-center rounded-full bg-ink-800 text-2xl ring-1 ring-white/10 transition-[transform,background-color] duration-150 hover:bg-ink-600 active:scale-[0.95] ${direction === "next" ? "right-4" : "left-4"}`}
+                  >
+                    {direction === "next" ? "›" : "‹"}
+                  </button>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>,
+          document.body,
         )}
-      </AnimatePresence>
     </>
   );
 }

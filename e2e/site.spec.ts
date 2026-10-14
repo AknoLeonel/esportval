@@ -62,6 +62,8 @@ test.describe("página de futsal", () => {
     await first.click();
     const dialog = page.getByRole("dialog");
     await expect(dialog).toBeVisible();
+    // Regressão: o lightbox precisa cobrir a viewport inteira (não ficar preso a um ancestral com filter/transform).
+    await expect.poll(async () => (await dialog.boundingBox())?.y).toBe(0);
     await page.keyboard.press("ArrowRight");
     await expect(dialog).toContainText("2/6");
     await page.keyboard.press("Escape");

@@ -46,6 +46,11 @@ describe("tokens de motion", () => {
     expect(exit.transition.duration).toBeLessThan(duration.enter);
   });
 
+  it("a entrada termina sem filter, para não criar bloco de contenção de position: fixed", () => {
+    const visible = reveal.visible as { transitionEnd: { filter: string } };
+    expect(visible.transitionEnd.filter).toBe("none");
+  });
+
   it("movimento reduzido só anima opacidade", () => {
     for (const state of Object.values(revealReduced)) {
       expect(Object.keys(state as object).filter((k) => k !== "transition")).toEqual(["opacity"]);

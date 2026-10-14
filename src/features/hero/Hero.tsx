@@ -91,7 +91,7 @@ export function Hero() {
         aria-hidden="true"
         className="absolute -top-40 -left-40 -z-10 size-[34rem] rounded-full bg-brand/15 blur-[120px]"
       />
-      <div className="mx-auto grid w-full max-w-6xl gap-12 px-5 sm:px-8 lg:grid-cols-[1.25fr_1fr] lg:items-center">
+      <div className="mx-auto grid w-full max-w-6xl gap-12 px-5 sm:px-8 lg:grid-cols-[1.4fr_1fr] lg:items-center">
         <div>
           <Reveal on="mount">
             <p className="mb-5 flex items-center gap-3 font-display text-sm font-bold tracking-[0.28em] text-brand uppercase">
@@ -102,7 +102,7 @@ export function Hero() {
           <Reveal on="mount" index={1}>
             <h1
               id="hero-title"
-              className="font-display text-[clamp(3rem,8.4vw,6.25rem)] leading-[0.9] font-extrabold tracking-tight uppercase"
+              className="font-display text-[clamp(2.75rem,7.2vw,5.5rem)] leading-[0.9] font-extrabold tracking-tight uppercase"
             >
               Oportunidades não surgem.{" "}
               <span className="block text-brand">É você que as cria.</span>

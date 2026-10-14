@@ -37,7 +37,15 @@ const exitTransition: Transition = { duration: duration.fast, ease: ease.out };
 /** Entrada: opacity + translateY + blur. Saída: mais curta e mais sutil que a entrada. */
 export const reveal: Variants = {
   hidden: { opacity: 0, y: 8, filter: "blur(4px)" },
-  visible: { opacity: 1, y: 0, filter: "blur(0px)", transition: spring.enter },
+  // transitionEnd remove o filter: `blur(0px)` residual cria um bloco de contenção que quebra
+  // `position: fixed` nos descendentes (lightbox) e mantém camadas de GPU à toa.
+  visible: {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    transition: spring.enter,
+    transitionEnd: { filter: "none" },
+  },
   exit: { opacity: 0, y: -4, filter: "blur(2px)", transition: exitTransition },
 };
 
