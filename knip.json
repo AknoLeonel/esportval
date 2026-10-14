@@ -1,0 +1,6 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "entry": ["e2e/**/*.ts"],
+  "project": ["src/**/*.{ts,tsx,css}", "e2e/**/*.ts", "*.{ts,mjs,cjs}"],
+  "ignoreDependencies": ["@stryker-mutator/command-runner"]
+}
