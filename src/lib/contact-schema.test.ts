@@ -43,3 +43,14 @@ describe("contactSchema", () => {
     expect(Object.keys(fieldErrors(result.error))).toEqual(["name"]);
   });
 });
+
+describe("campos ausentes (chamada direta à API)", () => {
+  it("devolve mensagens em português, não as padrão do Zod", () => {
+    const result = contactSchema.safeParse({});
+    if (result.success) throw new Error("deveria falhar");
+    const errors = fieldErrors(result.error);
+    expect(errors.name).toBe("Informe seu nome completo.");
+    expect(errors.email).toBe("Informe um e-mail válido.");
+    expect(errors.phone).toBe("Informe um telefone com DDD.");
+  });
+});

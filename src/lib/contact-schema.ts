@@ -3,10 +3,18 @@ import { z } from "zod";
 export const AGE_CATEGORIES = ["Sub-9", "Sub-11", "Sub-13", "Sub-15", "Sub-17", "Adulto"] as const;
 
 export const contactSchema = z.object({
-  name: z.string().trim().min(2, "Informe seu nome completo.").max(80, "Nome muito longo."),
-  email: z.string().trim().max(120).pipe(z.email("Informe um e-mail válido.")),
+  name: z
+    .string({ error: "Informe seu nome completo." })
+    .trim()
+    .min(2, "Informe seu nome completo.")
+    .max(80, "Nome muito longo."),
+  email: z
+    .string({ error: "Informe um e-mail válido." })
+    .trim()
+    .max(120)
+    .pipe(z.email("Informe um e-mail válido.")),
   phone: z
-    .string()
+    .string({ error: "Informe um telefone com DDD." })
     .trim()
     .regex(/^\+?[\d\s()-]{10,18}$/, "Informe um telefone com DDD."),
   category: z.enum(AGE_CATEGORIES, { error: "Escolha uma categoria." }),
