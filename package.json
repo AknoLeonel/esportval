@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@datadog/browser-rum": "^7.16.0",
+    "@newrelic/browser-agent": "^1.324.0",
     "@opentelemetry/api": "^1.9.1",
     "@opentelemetry/api-logs": "^0.223.0",
     "@opentelemetry/instrumentation": "^0.223.0",
@@ -49,7 +50,6 @@
     "@commitlint/config-conventional": "^21.2.3",
     "@playwright/test": "^1.64.1",
     "@stryker-mutator/core": "^10.0.0",
-    "@stryker-mutator/vitest-runner": "^10.0.0",
     "@tailwindcss/postcss": "^4.3.3",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",

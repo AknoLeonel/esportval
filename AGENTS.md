@@ -44,7 +44,7 @@ Contexto do projeto = **site institucional/marketing** → lentes: **Jakub (prin
 
 Regras para toda interface:
 
-- **Todo conteúdo tem skeleton.** Seção, lista, card, imagem e rota têm estado de carregamento (`components/ui/Skeleton`, `loading.tsx`). Nada "pula" na tela.
+- **Todo conteúdo tem skeleton.** Seção, lista, card e imagem têm estado de carregamento (`components/ui/Skeleton`): dados assíncronos ficam dentro de `<Suspense fallback={<XSkeleton/>}>`, blocos pesados em `LazyOnView`, imagens em `LazyImage`. Toda **rota nova com dados assíncronos** ganha um `loading.tsx`. Não crie `loading.tsx` na raiz: ele empurra o hero para dentro de um bloco escondido até o JS abrir. Nada "pula" na tela.
 - **Lazy loading:** imagens com `next/image` (`loading="lazy"` abaixo da dobra, `priority` só no hero), seções abaixo da dobra com `LazySection` (`next/dynamic` + `whileInView`).
 - **Entrada suave:** `opacity 0→1` + `translateY ~8px→0` + `blur 4px→0`, spring `bounce: 0`, ~450 ms. **Saída é mais sutil que a entrada** (`translateY -12px`, sem espera longa). Use `Reveal`, `Stagger`, `Presence` de `components/ui`; não crie animação solta.
 - **Progresso e carregamento:** barra de scroll, barra de transição de rota, spinner/progresso em envio de formulário e em filtros.
@@ -64,10 +64,11 @@ Wrapper único: **`src/lib/observability`** (`reportError`, `trackEvent`, `track
 
 | Provedor | Onde | Ativa com |
 |---|---|---|
-| Sentry | `sentry.*.config.ts`, `instrumentation*.ts`, error boundaries | `NEXT_PUBLIC_SENTRY_DSN` |
+| Sentry | `src/instrumentation*.ts`, `src/sentry.runtime.ts`, error boundaries | `NEXT_PUBLIC_SENTRY_DSN` |
 | OpenTelemetry | `instrumentation.ts` (`@vercel/otel`) | sempre (OTLP extra via `OTEL_EXPORTER_OTLP_ENDPOINT`) |
-| Datadog RUM | `components/observability/Datadog` | `NEXT_PUBLIC_DD_APPLICATION_ID` + `NEXT_PUBLIC_DD_CLIENT_TOKEN` |
-| New Relic Browser | `components/observability/NewRelic` | `NEXT_PUBLIC_NEWRELIC_*` |
+| Datadog RUM | `lib/observability/client.ts` (`@datadog/browser-rum`, sem session replay por causa de dados pessoais) | `NEXT_PUBLIC_DD_APPLICATION_ID` + `NEXT_PUBLIC_DD_CLIENT_TOKEN` |
+| (init no navegador) | `components/observability/Observability` | — |
+| New Relic Browser | `lib/observability/client.ts` (`@newrelic/browser-agent`) | `NEXT_PUBLIC_NEWRELIC_*` |
 
 Sem chave o provedor fica desligado **sem erro** (build e testes não exigem credenciais). Toda rota de API e todo `catch` relevante chama `reportError`. Variáveis novas entram em `.env.example`.
 
@@ -82,7 +83,7 @@ Sem chave o provedor fica desligado **sem erro** (build e testes não exigem cre
 | Commitlint + Husky | hook `commit-msg` | Conventional Commits |
 | Knip | `npm run knip` | arquivos, exports e dependências sem uso |
 | dependency-cruiser | `npm run arch` | contrato de arquitetura (seção 2) |
-| Stryker | `npm run mutation` | mutation testing (`src/lib`, `src/data`) |
+| Stryker | `npm run mutation` | mutation testing de `src/lib` (runner de comando: o `vitest-runner` 10 não ativa mutantes com Vitest 5) |
 
 `npm run check` = lint + typecheck + knip + arch + testes. Não desative regra para passar: corrija ou justifique no PR.
 

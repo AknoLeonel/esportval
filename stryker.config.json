@@ -1,0 +1,21 @@
+{
+  "$schema": "./node_modules/@stryker-mutator/core/schema/stryker-schema.json",
+  "_comment": "Usamos o runner de comando: o @stryker-mutator/vitest-runner 10 não ativa mutantes com Vitest 5 (0 testes por mutante). Trocar para 'vitest' quando houver suporte.",
+  "testRunner": "command",
+  "commandRunner": { "command": "npx vitest run src/lib --bail=1" },
+  "mutate": [
+    "src/lib/**/*.ts",
+    "!src/lib/**/*.test.ts",
+    "!src/lib/types.ts",
+    "!src/lib/observability/client.ts",
+    "!src/lib/observability/index.ts"
+  ],
+  "coverageAnalysis": "off",
+  "concurrency": 4,
+  "timeoutMS": 30000,
+  "reporters": ["clear-text", "progress", "html"],
+  "htmlReporter": { "fileName": "reports/mutation/index.html" },
+  "thresholds": { "high": 85, "low": 70, "break": 70 },
+  "tempDirName": ".stryker-tmp",
+  "cleanTempDir": true
+}
