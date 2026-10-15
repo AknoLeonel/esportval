@@ -34,7 +34,7 @@ export async function HeroPanel() {
           >
             <div
               aria-hidden="true"
-              className="absolute -top-24 -right-24 size-64 rounded-full bg-brand/20 blur-3xl"
+              className="absolute -top-24 -right-24 size-64 rounded-full bg-[radial-gradient(closest-side,rgb(255_106_19/0.28),transparent)]"
             />
             <p className="relative flex items-center gap-2 font-display text-sm font-bold tracking-[0.28em] text-brand uppercase">
               <span className="relative flex size-2.5">
@@ -89,7 +89,7 @@ export function Hero() {
       <CourtLines className="absolute inset-0 -z-10 size-full text-white/[0.06] [mask-image:radial-gradient(ellipse_at_30%_40%,black,transparent_75%)]" />
       <div
         aria-hidden="true"
-        className="absolute -top-40 -left-40 -z-10 size-[34rem] rounded-full bg-brand/15 blur-[120px]"
+        className="absolute -top-40 -left-40 -z-10 size-[34rem] rounded-full bg-[radial-gradient(closest-side,rgb(255_106_19/0.2),transparent)]"
       />
       <div className="mx-auto grid w-full max-w-6xl gap-12 px-5 sm:px-8 lg:grid-cols-[1.4fr_1fr] lg:items-center">
         <div>

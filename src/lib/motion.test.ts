@@ -3,8 +3,8 @@ import {
   duration,
   MAX_STAGGER_ITEMS,
   pop,
+  type RevealCustom,
   reveal,
-  revealReduced,
   STAGGER_STEP,
   staggerDelay,
 } from "./motion";
@@ -46,18 +46,48 @@ describe("tokens de motion", () => {
     expect(exit.transition.duration).toBeLessThan(duration.enter);
   });
 
-  it("a entrada termina sem filter, para não criar bloco de contenção de position: fixed", () => {
-    const visible = reveal.visible as { transitionEnd: { filter: string } };
-    expect(visible.transitionEnd.filter).toBe("none");
+  it("nunca anima a partir de scale(0)", () => {
+    expect((pop.hidden as { scale: number }).scale).toBeGreaterThanOrEqual(0.9);
+  });
+});
+
+type Visible = {
+  opacity: number;
+  y: number;
+  filter: string;
+  transition: Record<string, unknown>;
+  transitionEnd: { filter: string };
+};
+const visible = (custom?: RevealCustom) =>
+  (reveal.visible as (c?: RevealCustom) => Visible)(custom);
+
+describe("reveal.visible", () => {
+  it("termina sem filter, para não criar bloco de contenção de position: fixed", () => {
+    expect(visible().transitionEnd.filter).toBe("none");
   });
 
-  it("movimento reduzido só anima opacidade", () => {
-    for (const state of Object.values(revealReduced)) {
-      expect(Object.keys(state as object).filter((k) => k !== "transition")).toEqual(["opacity"]);
+  it("anima as MESMAS chaves com ou sem movimento reduzido (senão o blur do SSR fica preso)", () => {
+    const keys = (v: Visible) => Object.keys(v).sort();
+    expect(keys(visible({ reduced: true }))).toEqual(keys(visible({ reduced: false })));
+    expect(keys(visible({ reduced: true }))).toEqual(keys(visible()));
+    for (const v of [visible(), visible({ reduced: true })]) {
+      expect(v).toMatchObject({ opacity: 1, y: 0, filter: "blur(0px)" });
     }
   });
 
-  it("nunca anima a partir de scale(0)", () => {
-    expect((pop.hidden as { scale: number }).scale).toBeGreaterThanOrEqual(0.9);
+  it("com movimento reduzido só a opacidade leva tempo; deslocamento e blur são instantâneos", () => {
+    const { transition } = visible({ reduced: true });
+    expect(transition.y).toEqual({ duration: 0 });
+    expect(transition.filter).toEqual({ duration: 0 });
+    expect(transition.opacity).toEqual({ duration: duration.fast });
+  });
+
+  it("aplica o atraso da cascata na transição (a da variante vence a da prop)", () => {
+    expect(visible({ delay: 0.15 }).transition.delay).toBe(0.15);
+    expect(visible().transition.delay).toBe(0);
+  });
+
+  it("ignora o atraso com movimento reduzido: sem cascata", () => {
+    expect(visible({ reduced: true, delay: 0.3 }).transition.delay).toBeUndefined();
   });
 });

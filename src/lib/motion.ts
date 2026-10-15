@@ -34,26 +34,42 @@ export const spring = {
 
 const exitTransition: Transition = { duration: duration.fast, ease: ease.out };
 
+/** Parâmetros dinâmicos das variantes de entrada (passados via `custom`). */
+export type RevealCustom = {
+  /** Usuário pediu movimento reduzido: só a opacidade anima, o resto vai direto ao estado final. */
+  reduced?: boolean;
+  /** Atraso (segundos) para a cascata em listas. */
+  delay?: number;
+};
+
+/**
+ * Com movimento reduzido o deslocamento e o blur saltam para o estado final (duração 0) e só a
+ * opacidade faz fade. Importante: as CHAVES animadas são as mesmas com ou sem a preferência. O servidor
+ * não conhece a preferência e já grava `blur(4px)`/`translateY(8px)` no HTML; se o cliente animasse
+ * só `opacity`, esses valores nunca seriam limpos (site borrado para quem reduz movimento).
+ */
+const reducedTransition: Transition = {
+  opacity: { duration: duration.fast },
+  y: { duration: 0 },
+  filter: { duration: 0 },
+};
+
 /** Entrada: opacity + translateY + blur. Saída: mais curta e mais sutil que a entrada. */
 export const reveal: Variants = {
   hidden: { opacity: 0, y: 8, filter: "blur(4px)" },
-  // transitionEnd remove o filter: `blur(0px)` residual cria um bloco de contenção que quebra
-  // `position: fixed` nos descendentes (lightbox) e mantém camadas de GPU à toa.
-  visible: {
+  visible: (custom?: RevealCustom) => ({
     opacity: 1,
     y: 0,
     filter: "blur(0px)",
-    transition: spring.enter,
+    // O `transition` da variante vence o da prop do componente, por isso o atraso mora aqui.
+    transition: custom?.reduced
+      ? reducedTransition
+      : { ...spring.enter, delay: custom?.delay ?? 0 },
+    // transitionEnd remove o filter: `blur(0px)` residual cria um bloco de contenção que quebra
+    // `position: fixed` nos descendentes (lightbox) e mantém camadas de GPU à toa.
     transitionEnd: { filter: "none" },
-  },
+  }),
   exit: { opacity: 0, y: -4, filter: "blur(2px)", transition: exitTransition },
-};
-
-/** Movimento reduzido: só opacidade, sem deslocamento nem blur. */
-export const revealReduced: Variants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { duration: duration.fast } },
-  exit: { opacity: 0, transition: { duration: duration.instant } },
 };
 
 /** Painéis e menus: nascem perto da origem, nunca de scale(0). */
