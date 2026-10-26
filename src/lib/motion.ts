@@ -72,6 +72,31 @@ export const reveal: Variants = {
   exit: { opacity: 0, y: -4, filter: "blur(2px)", transition: exitTransition },
 };
 
+/**
+ * Entrada de página na navegação (template.tsx). Sem blur: é um bloco grande, e o blur custaria caro.
+ * Mesmas chaves em todos os estados, então nada fica preso com movimento reduzido.
+ */
+export const page: Variants = {
+  hidden: { opacity: 0, y: 6 },
+  visible: { opacity: 1, y: 0, transition: { duration: duration.base, ease: ease.out } },
+};
+
+/**
+ * Itens de listas filtráveis (projetos, parcerias). Filtro e busca são interações frequentes
+ * (Emil): rápido, sem blur e sem deslocamento. Mesmas chaves em todos os estados.
+ */
+export const filterItem: Variants = {
+  hidden: { opacity: 0, scale: 0.98 },
+  visible: { opacity: 1, scale: 1, transition: { duration: duration.fast, ease: ease.out } },
+  exit: { opacity: 0, scale: 0.98, transition: { duration: duration.instant, ease: ease.out } },
+};
+
+/** Barra de progresso entre páginas: avança devagar até 85% e completa quando a rota muda. */
+export const routeProgress = {
+  trickleTo: 0.85,
+  trickleDuration: 2.4,
+} as const;
+
 /** Painéis e menus: nascem perto da origem, nunca de scale(0). */
 export const pop: Variants = {
   hidden: { opacity: 0, scale: 0.96, y: -6 },

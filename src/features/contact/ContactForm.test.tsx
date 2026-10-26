@@ -9,10 +9,10 @@ vi.mock("@/lib/observability", () => ({ reportError, trackEvent }));
 const { ContactForm } = await import("./ContactForm");
 
 async function fillValid(user: ReturnType<typeof userEvent.setup>) {
-  await user.type(screen.getByLabelText("Nome completo"), "Maria Souza");
+  await user.type(screen.getByLabelText("Nome"), "Maria Souza");
   await user.type(screen.getByLabelText("E-mail"), "maria@example.com");
-  await user.type(screen.getByLabelText("WhatsApp / telefone"), "(61) 91234-5678");
-  await user.selectOptions(screen.getByLabelText("Categoria do atleta"), "Sub-13");
+  await user.selectOptions(screen.getByLabelText("Assunto"), "Parceria ou patrocínio");
+  await user.type(screen.getByLabelText("Mensagem"), "Queremos apoiar o próximo projeto.");
   await user.click(screen.getByRole("checkbox"));
 }
 
@@ -33,11 +33,12 @@ describe("ContactForm", () => {
 
     await user.click(screen.getByRole("button", { name: "Enviar" }));
 
-    expect(await screen.findByText("Informe seu nome completo.")).toBeInTheDocument();
+    expect(await screen.findByText("Informe seu nome.")).toBeInTheDocument();
     expect(screen.getByText("Informe um e-mail válido.")).toBeInTheDocument();
-    expect(screen.getByText("É preciso aceitar para enviarmos o retorno.")).toBeInTheDocument();
-    expect(screen.getByLabelText("Nome completo")).toHaveAttribute("aria-invalid", "true");
-    expect(screen.getByLabelText("Nome completo")).toHaveFocus();
+    expect(screen.getByText("É preciso aceitar para respondermos.")).toBeInTheDocument();
+    expect(screen.getByText("Escolha um assunto.")).toBeInTheDocument();
+    expect(screen.getByLabelText("Nome")).toHaveAttribute("aria-invalid", "true");
+    expect(screen.getByLabelText("Nome")).toHaveFocus();
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
@@ -54,8 +55,10 @@ describe("ContactForm", () => {
 
     resolve(new Response(JSON.stringify({ ok: true }), { status: 200 }));
 
-    expect(await screen.findByText("Recebemos seu contato!")).toBeInTheDocument();
-    expect(trackEvent).toHaveBeenCalledWith("contact_submitted", { category: "Sub-13" });
+    expect(await screen.findByText("Recebemos sua mensagem!")).toBeInTheDocument();
+    expect(trackEvent).toHaveBeenCalledWith("contact_submitted", {
+      subject: "Parceria ou patrocínio",
+    });
     const [, init] = fetchMock.mock.calls[0] as [string, RequestInit];
     expect(JSON.parse(init.body as string)).toMatchObject({
       email: "maria@example.com",
