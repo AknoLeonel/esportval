@@ -1,19 +1,19 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
-import type { GalleryItem } from "@/lib/types";
-import { GalleryGrid } from "./GalleryGrid";
+import type { MediaItem } from "@/lib/types";
+import { Gallery } from "./Gallery";
 
-const items: GalleryItem[] = [
+const items: MediaItem[] = [
   { id: "1", src: "/gallery/quadra-1.svg", alt: "Um", caption: "Dia de jogo" },
   { id: "2", src: "/gallery/quadra-2.svg", alt: "Dois", caption: "Treino" },
   { id: "3", src: "/gallery/quadra-3.svg", alt: "Três", caption: "Saída" },
 ];
 
-describe("GalleryGrid", () => {
+describe("Gallery", () => {
   it("abre o lightbox, trava a rolagem e devolve o foco ao fechar com Esc", async () => {
     const user = userEvent.setup();
-    render(<GalleryGrid items={items} />);
+    render(<Gallery items={items} />);
     const trigger = screen.getByRole("button", { name: "Ampliar: Treino" });
 
     await user.click(trigger);
@@ -32,7 +32,7 @@ describe("GalleryGrid", () => {
 
   it("navega com setas e botões, dando a volta nas pontas", async () => {
     const user = userEvent.setup();
-    render(<GalleryGrid items={items} />);
+    render(<Gallery items={items} />);
     await user.click(screen.getByRole("button", { name: "Ampliar: Dia de jogo" }));
     const dialog = await screen.findByRole("dialog");
     expect(dialog).toHaveTextContent("1/3");
@@ -52,7 +52,7 @@ describe("GalleryGrid", () => {
 
   it("fecha ao clicar no fundo, mas não ao clicar na imagem", async () => {
     const user = userEvent.setup();
-    render(<GalleryGrid items={items} />);
+    render(<Gallery items={items} />);
     await user.click(screen.getByRole("button", { name: "Ampliar: Saída" }));
     const dialog = await screen.findByRole("dialog");
 

@@ -6,9 +6,9 @@ import { createPortal } from "react-dom";
 import { LazyImage } from "@/components/ui/LazyImage";
 import { Reveal } from "@/components/ui/Reveal";
 import { duration, ease, reveal } from "@/lib/motion";
-import type { GalleryItem } from "@/lib/types";
+import type { MediaItem } from "@/lib/types";
 
-export function GalleryGrid({ items }: { items: GalleryItem[] }) {
+export function Gallery({ items }: { items: MediaItem[] }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const trigger = useRef<HTMLElement | null>(null);
   const closeButton = useRef<HTMLButtonElement>(null);
