@@ -1,7 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { Barlow, Barlow_Condensed } from "next/font/google";
+import { Suspense } from "react";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
+import { RouteProgress } from "@/components/layout/RouteProgress";
 import { Observability } from "@/components/observability/Observability";
 import { MotionProvider } from "@/components/ui/Providers";
 import { nav, site } from "@/data/site";
@@ -53,6 +55,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           >
             Pular para o conteúdo
           </a>
+          <Suspense fallback={null}>
+            <RouteProgress />
+          </Suspense>
           <Header nav={nav} cta={{ href: "#contato", label: "Quero treinar" }} />
           <main id="conteudo">{children}</main>
           <Footer nav={nav} instagram={site.instagram} tagline={site.tagline} />
