@@ -6,7 +6,7 @@ const MAX_BODY_BYTES = 10_000;
 const WEBHOOK_TIMEOUT_MS = 8_000;
 
 /**
- * Recebe a mensagem e repassa para CONTACT_WEBHOOK_URL (Zapier, Make, Slack, planilha, CRM…).
+ * Recebe a inscrição e repassa para CONTACT_WEBHOOK_URL (Zapier, Make, Slack, planilha, CRM…).
  * Sem webhook configurado devolvemos 503 em vez de "fingir" que o lead foi guardado.
  */
 export async function POST(request: Request) {
@@ -34,7 +34,7 @@ export async function POST(request: Request) {
 
   const webhook = process.env.CONTACT_WEBHOOK_URL;
   if (!webhook) {
-    reportError(new Error("CONTACT_WEBHOOK_URL não configurada: mensagem não pôde ser entregue"), {
+    reportError(new Error("CONTACT_WEBHOOK_URL não configurada: inscrição não pôde ser entregue"), {
       route: "/api/contato",
     });
     return NextResponse.json({ ok: false, code: "not_configured" }, { status: 503 });
@@ -46,7 +46,7 @@ export async function POST(request: Request) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        text: `Novo contato pelo site Esportval: ${lead.name} (${lead.subject}) — ${lead.email}${lead.phone ? ` / ${lead.phone}` : ""}`,
+        text: `Nova inscrição Esportval: ${lead.name} (${lead.category}) — ${lead.email} / ${lead.phone}`,
         lead,
         receivedAt: new Date().toISOString(),
       }),
@@ -58,6 +58,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, code: "delivery_failed" }, { status: 502 });
   }
 
-  trackEvent("contact_delivered", { subject: lead.subject });
+  trackEvent("contact_delivered", { category: lead.category });
   return NextResponse.json({ ok: true });
 }

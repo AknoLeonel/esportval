@@ -1,8 +1,6 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Logo } from "@/components/brand/Logo";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
@@ -14,10 +12,6 @@ type NavItem = { href: string; label: string };
 export function Header({ nav, cta }: { nav: readonly NavItem[]; cta: NavItem }) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const pathname = usePathname();
-  // Página atual: /projetos/[slug] também acende "Projetos". Links com âncora (/#sobre) nunca ficam ativos.
-  const isCurrent = (href: string) =>
-    !href.includes("#") && !!pathname && (pathname === href || pathname.startsWith(`${href}/`));
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -45,28 +39,26 @@ export function Header({ nav, cta }: { nav: readonly NavItem[]; cta: NavItem }) 
         )}
       >
         <div className="mx-auto flex h-full max-w-6xl items-center justify-between px-5 sm:px-8">
-          <Link href="/" aria-label="Esportval — início" onClick={() => setOpen(false)}>
+          <a href="#inicio" aria-label="Esportval Futsal — início" onClick={() => setOpen(false)}>
             <Logo />
-          </Link>
+          </a>
 
           <nav aria-label="Principal" className="hidden items-center gap-1 lg:flex">
             {nav.map((item) => (
-              <Link
+              <a
                 key={item.href}
                 href={item.href}
-                aria-current={isCurrent(item.href) ? "page" : undefined}
-                className="rounded-full px-4 py-2 font-display text-lg font-semibold tracking-wide text-fg-muted uppercase transition-colors duration-150 hover:bg-white/5 hover:text-fg aria-[current=page]:bg-white/5 aria-[current=page]:text-fg"
+                className="rounded-full px-4 py-2 font-display text-lg font-semibold tracking-wide text-fg-muted uppercase transition-colors duration-150 hover:bg-white/5 hover:text-fg"
               >
                 {item.label}
-              </Link>
+              </a>
             ))}
-            <Link
+            <a
               href={cta.href}
-              aria-current={isCurrent(cta.href) ? "page" : undefined}
-              className="ml-3 rounded-full bg-brand px-5 py-2 font-display text-lg font-bold tracking-wide text-ink-950 uppercase transition-[transform,background-color,box-shadow] duration-150 hover:bg-brand-400 active:scale-[0.97] aria-[current=page]:ring-2 aria-[current=page]:ring-brand-300 aria-[current=page]:ring-offset-2 aria-[current=page]:ring-offset-ink-950"
+              className="ml-3 rounded-full bg-brand px-5 py-2 font-display text-lg font-bold tracking-wide text-ink-950 uppercase transition-[transform,background-color] duration-150 hover:bg-brand-400 active:scale-[0.97]"
             >
               {cta.label}
-            </Link>
+            </a>
           </nav>
 
           <button
@@ -109,14 +101,13 @@ export function Header({ nav, cta }: { nav: readonly NavItem[]; cta: NavItem }) 
               <ul className="grid gap-1">
                 {[...nav, cta].map((item) => (
                   <li key={item.href}>
-                    <Link
+                    <a
                       href={item.href}
                       onClick={() => setOpen(false)}
-                      aria-current={isCurrent(item.href) ? "page" : undefined}
-                      className="block rounded-2xl px-4 py-3 font-display text-2xl font-bold tracking-wide uppercase transition-colors duration-150 hover:bg-white/5 aria-[current=page]:text-brand"
+                      className="block rounded-2xl px-4 py-3 font-display text-2xl font-bold tracking-wide uppercase transition-colors duration-150 hover:bg-white/5"
                     >
                       {item.label}
-                    </Link>
+                    </a>
                   </li>
                 ))}
               </ul>

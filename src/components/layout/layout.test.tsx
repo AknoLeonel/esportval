@@ -1,58 +1,23 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { beforeEach, describe, expect, it, vi } from "vitest";
-
-const navigation = vi.hoisted(() => ({ pathname: "/", search: "" }));
-vi.mock("next/navigation", () => ({
-  usePathname: () => navigation.pathname,
-  useSearchParams: () => new URLSearchParams(navigation.search),
-}));
-
-const { Logo } = await import("../brand/Logo");
-const { Mark } = await import("../brand/Mark");
-const { Footer } = await import("./Footer");
-const { Header } = await import("./Header");
+import { describe, expect, it } from "vitest";
+import { Crest } from "../brand/Crest";
+import { Logo } from "../brand/Logo";
+import { Footer } from "./Footer";
+import { Header } from "./Header";
 
 const nav = [
-  { href: "/projetos", label: "Projetos" },
-  { href: "/#sobre", label: "Quem somos" },
+  { href: "#jogos", label: "Jogos" },
+  { href: "#elenco", label: "Elenco" },
 ];
-const cta = { href: "/transparencia", label: "Transparência" };
-
-beforeEach(() => {
-  navigation.pathname = "/";
-});
+const cta = { href: "#contato", label: "Quero treinar" };
 
 describe("Header", () => {
-  it("tem navegação principal e o destaque para a transparência", () => {
+  it("tem navegação principal e CTA", () => {
     render(<Header nav={nav} cta={cta} />);
     const main = screen.getByRole("navigation", { name: "Principal" });
-    expect(main).toHaveTextContent("Projetos");
-    expect(main).toHaveTextContent("Transparência");
-  });
-
-  it("marca a página atual, inclusive nas páginas filhas, e nunca links com âncora", () => {
-    navigation.pathname = "/projetos/festival-multiesportes";
-    render(<Header nav={nav} cta={cta} />);
-    const main = screen.getByRole("navigation", { name: "Principal" });
-    expect(main.querySelector("a[href='/projetos']")).toHaveAttribute("aria-current", "page");
-    expect(main.querySelector("a[href='/#sobre']")).not.toHaveAttribute("aria-current");
-    expect(main.querySelector("a[href='/transparencia']")).not.toHaveAttribute("aria-current");
-  });
-
-  it("o botão de destaque também indica a página atual", () => {
-    navigation.pathname = "/transparencia";
-    render(<Header nav={nav} cta={cta} />);
-    const main = screen.getByRole("navigation", { name: "Principal" });
-    expect(main.querySelector("a[href='/transparencia']")).toHaveAttribute("aria-current", "page");
-  });
-
-  it("não marca prefixo parcial como página atual", () => {
-    navigation.pathname = "/projetos-antigos";
-    render(<Header nav={nav} cta={cta} />);
-    expect(
-      screen.getByRole("navigation", { name: "Principal" }).querySelector("[aria-current]"),
-    ).toBeNull();
+    expect(main).toHaveTextContent("Jogos");
+    expect(main).toHaveTextContent("Quero treinar");
   });
 
   it("abre e fecha o menu móvel (botão, link e Esc)", async () => {
@@ -63,6 +28,10 @@ describe("Header", () => {
 
     await user.click(toggle);
     expect(screen.getByRole("navigation", { name: "Menu móvel" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Fechar menu" })).toHaveAttribute(
+      "aria-expanded",
+      "true",
+    );
 
     await user.keyboard("{Escape}");
     await act(async () => {});
@@ -70,7 +39,7 @@ describe("Header", () => {
 
     await user.click(screen.getByRole("button", { name: "Abrir menu" }));
     const mobile = screen.getByRole("navigation", { name: "Menu móvel" });
-    await user.click(mobile.querySelector("a[href='/#sobre']") as HTMLElement);
+    await user.click(mobile.querySelector("a[href='#elenco']") as HTMLElement);
     expect(await screen.findByRole("button", { name: "Abrir menu" })).toBeInTheDocument();
   });
 
@@ -83,41 +52,29 @@ describe("Header", () => {
 });
 
 describe("Footer", () => {
-  const props = {
-    nav,
-    instagram: { handle: "esportval", url: "https://instagram.com/esportval" },
-    motto: "Lema",
-  };
-
-  it("mostra dados da associação como 'em atualização' enquanto não informados", () => {
-    render(<Footer {...props} organization={{ legalName: null, cnpj: null }} />);
-    expect(screen.getByText("Razão social:").nextSibling).toHaveTextContent("em atualização");
-    expect(screen.getByText("CNPJ:").nextSibling).toHaveTextContent("em atualização");
+  it("mostra links de navegação, Instagram seguro e o ano atual", () => {
+    render(
+      <Footer
+        nav={nav}
+        instagram={{ handle: "esportval", url: "https://instagram.com/esportval" }}
+        tagline="Lema"
+      />,
+    );
     expect(screen.getByRole("link", { name: "Instagram @esportval" })).toHaveAttribute(
       "rel",
       "noopener noreferrer",
     );
+    expect(screen.getByRole("link", { name: "Elenco" })).toHaveAttribute("href", "#elenco");
     expect(screen.getByText(new RegExp(String(new Date().getFullYear())))).toBeInTheDocument();
-  });
-
-  it("mostra razão social e CNPJ quando existem", () => {
-    render(
-      <Footer
-        {...props}
-        organization={{ legalName: "Associação Esportval", cnpj: "00.000.000/0001-00" }}
-      />,
-    );
-    expect(screen.getByText("Associação Esportval")).toBeInTheDocument();
-    expect(screen.getByText("00.000.000/0001-00")).toBeInTheDocument();
   });
 });
 
 describe("marca", () => {
-  it("bola multiesportiva é decorativa por padrão e acessível com título", () => {
-    const { container, rerender } = render(<Mark />);
+  it("escudo é decorativo por padrão e acessível quando recebe título", () => {
+    const { container, rerender } = render(<Crest />);
     expect(container.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
-    rerender(<Mark title="Esportval" />);
-    expect(screen.getByRole("img", { name: "Esportval" })).toBeInTheDocument();
+    rerender(<Crest title="Escudo Fut’Art" />);
+    expect(screen.getByRole("img", { name: "Escudo Fut’Art" })).toBeInTheDocument();
   });
 
   it("logo tem versão compacta sem texto", () => {

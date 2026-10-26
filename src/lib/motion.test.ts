@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
   duration,
-  filterItem,
   MAX_STAGGER_ITEMS,
   pop,
   type RevealCustom,
@@ -61,23 +60,6 @@ type Visible = {
 };
 const visible = (custom?: RevealCustom) =>
   (reveal.visible as (c?: RevealCustom) => Visible)(custom);
-
-describe("filterItem (filtros e busca)", () => {
-  it("é rápido (≤180ms) e sem blur nem deslocamento", () => {
-    const visible = filterItem.visible as { transition: { duration: number } };
-    const exit = filterItem.exit as { transition: { duration: number } };
-    expect(visible.transition.duration).toBeLessThanOrEqual(0.18);
-    expect(exit.transition.duration).toBeLessThanOrEqual(visible.transition.duration);
-    for (const state of Object.values(filterItem)) {
-      expect(
-        Object.keys(state as object)
-          .filter((k) => k !== "transition")
-          .sort(),
-      ).toEqual(["opacity", "scale"]);
-    }
-    expect((filterItem.hidden as { scale: number }).scale).toBeGreaterThanOrEqual(0.9);
-  });
-});
 
 describe("reveal.visible", () => {
   it("termina sem filter, para não criar bloco de contenção de position: fixed", () => {

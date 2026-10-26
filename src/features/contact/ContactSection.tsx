@@ -9,20 +9,19 @@ export function ContactSection() {
   return (
     <Section
       id="contato"
-      eyebrow="Fale com a gente"
-      title="Contato"
-      description="Parcerias, patrocínio, imprensa, pedidos de informação sobre a prestação de contas ou vontade de participar de um projeto."
+      eyebrow="Venha jogar"
+      title="Quero treinar"
+      description="Conte um pouco sobre o atleta e a comissão técnica retorna com horários e próximos passos."
       className="bg-ink-900"
     >
       <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
         <Reveal className="space-y-4 text-lg text-fg-muted">
           <p className="font-display text-3xl leading-tight font-bold text-fg uppercase">
-            Escreva para a {site.name}
+            {site.tagline}
           </p>
           <p>
-            Empresas e órgãos que querem apoiar um projeto, jornalistas e qualquer pessoa com
-            dúvidas sobre como os recursos foram usados: escreva pelo formulário ou chame no
-            Instagram.
+            Do iniciante ao atleta de competição: preencha o formulário ao lado. Prefere conversar?
+            Chame o projeto no Instagram.
           </p>
           <a
             href={site.instagram.url}

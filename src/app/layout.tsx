@@ -1,12 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import { Barlow, Barlow_Condensed } from "next/font/google";
-import { Suspense } from "react";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
-import { RouteProgress } from "@/components/layout/RouteProgress";
 import { Observability } from "@/components/observability/Observability";
 import { MotionProvider } from "@/components/ui/Providers";
-import { headerCta, nav, site } from "@/data/site";
+import { nav, site } from "@/data/site";
 import "./globals.css";
 
 const display = Barlow_Condensed({
@@ -25,7 +23,7 @@ const sans = Barlow({
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
-  title: { default: `${site.name} — ${site.headline}`, template: `%s · ${site.name}` },
+  title: { default: `${site.name} — ${site.tagline}`, template: `%s · ${site.name}` },
   description: site.description,
   applicationName: site.name,
   openGraph: {
@@ -55,17 +53,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           >
             Pular para o conteúdo
           </a>
-          <Suspense fallback={null}>
-            <RouteProgress />
-          </Suspense>
-          <Header nav={nav} cta={headerCta} />
+          <Header nav={nav} cta={{ href: "#contato", label: "Quero treinar" }} />
           <main id="conteudo">{children}</main>
-          <Footer
-            nav={[...nav, headerCta]}
-            instagram={site.instagram}
-            motto={site.motto}
-            organization={site.organization}
-          />
+          <Footer nav={nav} instagram={site.instagram} tagline={site.tagline} />
           <Observability />
         </MotionProvider>
       </body>

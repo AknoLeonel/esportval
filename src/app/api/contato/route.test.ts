@@ -10,8 +10,7 @@ const valid = {
   name: "Maria Souza",
   email: "maria@example.com",
   phone: "(61) 91234-5678",
-  subject: "Transparência e prestação de contas",
-  message: "Gostaria do relatório do festival.",
+  category: "Sub-13",
   consent: true,
 };
 
@@ -48,27 +47,10 @@ describe("POST /api/contato", () => {
     const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
     expect(url).toBe("https://hooks.example.com/abc");
     const sent = JSON.parse(init.body as string);
-    expect(sent.lead).toMatchObject({
-      name: "Maria Souza",
-      subject: "Transparência e prestação de contas",
-    });
+    expect(sent.lead).toMatchObject({ name: "Maria Souza", category: "Sub-13" });
     expect(sent.lead).not.toHaveProperty("consent");
     expect(sent.text).toContain("Maria Souza");
-    expect(trackEvent).toHaveBeenCalledWith("contact_delivered", {
-      subject: "Transparência e prestação de contas",
-    });
-    expect(sent.text).toContain("(61) 91234-5678");
-  });
-
-  it("mensagem sem telefone não imprime telefone vazio no aviso", async () => {
-    const fetchMock = vi.fn().mockResolvedValue(new Response("ok", { status: 200 }));
-    vi.stubGlobal("fetch", fetchMock);
-    const { phone: _phone, ...withoutPhone } = valid;
-    expect((await post(withoutPhone)).status).toBe(200);
-    const sent = JSON.parse((fetchMock.mock.calls[0] as [string, RequestInit])[1].body as string);
-    expect(sent.text).toBe(
-      "Novo contato pelo site Esportval: Maria Souza (Transparência e prestação de contas) — maria@example.com",
-    );
+    expect(trackEvent).toHaveBeenCalledWith("contact_delivered", { category: "Sub-13" });
   });
 
   it("devolve 422 com erros por campo", async () => {

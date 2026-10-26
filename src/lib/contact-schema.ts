@@ -1,18 +1,12 @@
 import { z } from "zod";
 
-export const SUBJECTS = [
-  "Parceria ou patrocínio",
-  "Transparência e prestação de contas",
-  "Participar de um projeto",
-  "Imprensa",
-  "Outro assunto",
-] as const;
+export const AGE_CATEGORIES = ["Sub-9", "Sub-11", "Sub-13", "Sub-15", "Sub-17", "Adulto"] as const;
 
 export const contactSchema = z.object({
   name: z
-    .string({ error: "Informe seu nome." })
+    .string({ error: "Informe seu nome completo." })
     .trim()
-    .min(2, "Informe seu nome.")
+    .min(2, "Informe seu nome completo.")
     .max(80, "Nome muito longo."),
   email: z
     .string({ error: "Informe um e-mail válido." })
@@ -20,17 +14,12 @@ export const contactSchema = z.object({
     .max(120)
     .pipe(z.email("Informe um e-mail válido.")),
   phone: z
-    .string({ error: "Informe um telefone com DDD ou deixe em branco." })
+    .string({ error: "Informe um telefone com DDD." })
     .trim()
-    .regex(/^(\+?[\d\s()-]{10,18})?$/, "Informe um telefone com DDD ou deixe em branco.")
-    .optional(),
-  subject: z.enum(SUBJECTS, { error: "Escolha um assunto." }),
-  message: z
-    .string({ error: "Escreva sua mensagem." })
-    .trim()
-    .min(10, "Escreva sua mensagem (mínimo de 10 caracteres).")
-    .max(1500, "Mensagem muito longa (máx. 1.500 caracteres)."),
-  consent: z.literal(true, { error: "É preciso aceitar para respondermos." }),
+    .regex(/^\+?[\d\s()-]{10,18}$/, "Informe um telefone com DDD."),
+  category: z.enum(AGE_CATEGORIES, { error: "Escolha uma categoria." }),
+  message: z.string().trim().max(600, "Mensagem muito longa (máx. 600 caracteres).").optional(),
+  consent: z.literal(true, { error: "É preciso aceitar para enviarmos o retorno." }),
   /** Honeypot: humanos não preenchem. */
   website: z.string().max(0).optional(),
 });

@@ -1,19 +1,19 @@
 import { site } from "@/data/site";
 import { ContactSection } from "@/features/contact/ContactSection";
-import { About } from "@/features/home/About";
-import { FeaturedProjects } from "@/features/home/FeaturedProjects";
-import { Hero } from "@/features/home/Hero";
-import { TransparencyCallout } from "@/features/home/TransparencyCallout";
+import { GallerySection } from "@/features/gallery/GallerySection";
+import { Hero } from "@/features/hero/Hero";
+import { MatchesSection } from "@/features/matches/MatchesSection";
+import { NewsSection } from "@/features/news/NewsSection";
+import { SquadSection } from "@/features/squad/SquadSection";
+import { StandingsSection } from "@/features/standings/StandingsSection";
 
 const jsonLd = {
   "@context": "https://schema.org",
-  "@type": "SportsOrganization",
+  "@type": "SportsTeam",
   name: site.name,
-  ...(site.organization.legalName ? { legalName: site.organization.legalName } : {}),
-  ...(site.organization.cnpj ? { taxID: site.organization.cnpj } : {}),
-  description: site.description,
+  sport: "Futsal",
   url: site.url,
-  slogan: site.motto,
+  slogan: site.tagline,
   logo: `${site.url}/icon.svg`,
   sameAs: [site.instagram.url],
 };
@@ -26,9 +26,11 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
       />
       <Hero />
-      <FeaturedProjects />
-      <TransparencyCallout />
-      <About />
+      <MatchesSection />
+      <StandingsSection />
+      <SquadSection />
+      <NewsSection />
+      <GallerySection />
       <ContactSection />
     </>
   );

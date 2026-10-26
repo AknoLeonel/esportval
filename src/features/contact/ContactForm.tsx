@@ -6,11 +6,11 @@ import { Button } from "@/components/ui/Button";
 import { Spinner } from "@/components/ui/Spinner";
 import { cn } from "@/lib/cn";
 import {
+  AGE_CATEGORIES,
   type ContactInput,
   contactSchema,
   type FieldErrors,
   fieldErrors,
-  SUBJECTS,
 } from "@/lib/contact-schema";
 import { duration, ease, reveal } from "@/lib/motion";
 import { reportError, trackEvent } from "@/lib/observability";
@@ -34,9 +34,9 @@ export function ContactForm({ instagramUrl }: { instagramUrl: string }) {
     const raw = {
       name: form.get("name"),
       email: form.get("email"),
-      phone: form.get("phone") || undefined,
-      subject: form.get("subject"),
-      message: form.get("message"),
+      phone: form.get("phone"),
+      category: form.get("category"),
+      message: form.get("message") || undefined,
       consent: form.get("consent") === "on",
       website: form.get("website") || undefined,
     };
@@ -65,7 +65,7 @@ export function ContactForm({ instagramUrl }: { instagramUrl: string }) {
         return;
       }
       if (!response.ok) throw new Error(`contato: HTTP ${response.status}`);
-      trackEvent("contact_submitted", { subject: parsed.data.subject });
+      trackEvent("contact_submitted", { category: parsed.data.category });
       setStatus("success");
     } catch (failure) {
       reportError(failure, { feature: "contact-form" });
@@ -113,10 +113,10 @@ export function ContactForm({ instagramUrl }: { instagramUrl: string }) {
               ✓
             </motion.div>
             <h3 className="mt-6 font-display text-4xl font-extrabold uppercase">
-              Recebemos sua mensagem!
+              Recebemos seu contato!
             </h3>
             <p className="mx-auto mt-3 max-w-sm text-fg-muted">
-              Vamos responder pelo e-mail informado. Enquanto isso, acompanhe os projetos no
+              A comissão técnica vai responder em breve. Enquanto isso, acompanhe os bastidores no
               Instagram.
             </p>
             <a
@@ -143,7 +143,7 @@ export function ContactForm({ instagramUrl }: { instagramUrl: string }) {
           >
             <div className="sm:col-span-2">
               <label htmlFor={`${uid}-name`} className="mb-1.5 block font-semibold">
-                Nome
+                Nome completo
               </label>
               <input
                 id={`${uid}-name`}
@@ -174,7 +174,7 @@ export function ContactForm({ instagramUrl }: { instagramUrl: string }) {
 
             <div>
               <label htmlFor={`${uid}-phone`} className="mb-1.5 block font-semibold">
-                Telefone <span className="font-normal text-fg-subtle">(opcional)</span>
+                WhatsApp / telefone
               </label>
               <input
                 id={`${uid}-phone`}
@@ -190,37 +190,37 @@ export function ContactForm({ instagramUrl }: { instagramUrl: string }) {
             </div>
 
             <div className="sm:col-span-2">
-              <label htmlFor={`${uid}-subject`} className="mb-1.5 block font-semibold">
-                Assunto
+              <label htmlFor={`${uid}-category`} className="mb-1.5 block font-semibold">
+                Categoria do atleta
               </label>
               <select
-                id={`${uid}-subject`}
-                name="subject"
+                id={`${uid}-category`}
+                name="category"
                 defaultValue=""
                 className={inputClass}
-                aria-invalid={invalid("subject")}
-                aria-describedby={describe("subject")}
+                aria-invalid={invalid("category")}
+                aria-describedby={describe("category")}
               >
                 <option value="" disabled>
                   Selecione
                 </option>
-                {SUBJECTS.map((subject) => (
-                  <option key={subject} value={subject}>
-                    {subject}
+                {AGE_CATEGORIES.map((category) => (
+                  <option key={category} value={category}>
+                    {category}
                   </option>
                 ))}
               </select>
-              {fieldError("subject")}
+              {fieldError("category")}
             </div>
 
             <div className="sm:col-span-2">
               <label htmlFor={`${uid}-message`} className="mb-1.5 block font-semibold">
-                Mensagem
+                Mensagem <span className="font-normal text-fg-subtle">(opcional)</span>
               </label>
               <textarea
                 id={`${uid}-message`}
                 name="message"
-                rows={5}
+                rows={4}
                 className={cn(inputClass, "resize-y")}
                 aria-invalid={invalid("message")}
                 aria-describedby={describe("message")}
