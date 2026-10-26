@@ -2,7 +2,7 @@ import { Skeleton, SkeletonRegion } from "@/components/ui/Skeleton";
 
 export function ContactSkeleton() {
   return (
-    <SkeletonRegion label="Carregando formulário de inscrição">
+    <SkeletonRegion label="Carregando formulário de contato">
       <div className="space-y-4 rounded-[var(--radius-card)] bg-ink-800 p-6 sm:p-8">
         {["a", "b", "c", "d"].map((key) => (
           <div key={key} className="space-y-2">

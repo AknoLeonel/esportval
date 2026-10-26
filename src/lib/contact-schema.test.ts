@@ -4,28 +4,30 @@ import { contactSchema, fieldErrors } from "./contact-schema";
 const valid = {
   name: "Maria Souza",
   email: "maria@example.com",
-  phone: "(61) 91234-5678",
-  category: "Sub-13",
+  subject: "Parceria ou patrocínio",
+  message: "Queremos apoiar o próximo projeto.",
   consent: true,
 };
 
 describe("contactSchema", () => {
-  it("aceita um contato válido", () => {
+  it("aceita um contato válido, com telefone opcional", () => {
     expect(contactSchema.safeParse(valid).success).toBe(true);
+    expect(contactSchema.safeParse({ ...valid, phone: "(61) 91234-5678" }).success).toBe(true);
+    expect(contactSchema.safeParse({ ...valid, phone: "" }).success).toBe(true);
   });
 
   it("remove espaços das pontas", () => {
-    const parsed = contactSchema.parse({ ...valid, name: "  Maria Souza  " });
-    expect(parsed.name).toBe("Maria Souza");
+    expect(contactSchema.parse({ ...valid, name: "  Maria Souza  " }).name).toBe("Maria Souza");
   });
 
   it.each([
     ["nome curto", { name: "A" }, "name"],
     ["e-mail inválido", { email: "maria@" }, "email"],
-    ["telefone curto", { phone: "123" }, "phone"],
-    ["categoria fora da lista", { category: "Sub-99" }, "category"],
+    ["telefone inválido", { phone: "123" }, "phone"],
+    ["assunto fora da lista", { subject: "Vendas" }, "subject"],
+    ["mensagem curta", { message: "oi" }, "message"],
+    ["mensagem longa", { message: "x".repeat(1501) }, "message"],
     ["sem consentimento", { consent: false }, "consent"],
-    ["mensagem longa", { message: "x".repeat(601) }, "message"],
   ])("rejeita %s", (_label, patch, field) => {
     const result = contactSchema.safeParse({ ...valid, ...patch });
     expect(result.success).toBe(false);
@@ -42,15 +44,17 @@ describe("contactSchema", () => {
     if (result.success) throw new Error("deveria falhar");
     expect(Object.keys(fieldErrors(result.error))).toEqual(["name"]);
   });
-});
 
-describe("campos ausentes (chamada direta à API)", () => {
-  it("devolve mensagens em português, não as padrão do Zod", () => {
+  it("campos ausentes (chamada direta à API) têm mensagens em português", () => {
     const result = contactSchema.safeParse({});
     if (result.success) throw new Error("deveria falhar");
     const errors = fieldErrors(result.error);
-    expect(errors.name).toBe("Informe seu nome completo.");
+    expect(errors.name).toBe("Informe seu nome.");
     expect(errors.email).toBe("Informe um e-mail válido.");
-    expect(errors.phone).toBe("Informe um telefone com DDD.");
+    expect(errors.message).toBe("Escreva sua mensagem.");
+    expect(errors.subject).toBe("Escolha um assunto.");
+    const phone = contactSchema.safeParse({ phone: null });
+    if (phone.success) throw new Error("deveria falhar");
+    expect(fieldErrors(phone.error).phone).toBe("Informe um telefone com DDD ou deixe em branco.");
   });
 });

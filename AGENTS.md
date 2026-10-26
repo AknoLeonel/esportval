@@ -1,9 +1,18 @@
-# AGENTS.md — Esportval Futsal
+# AGENTS.md — Esportval
 
 Instruções para **qualquer agente de qualquer modelo** (Claude, Codex, Gemini, Copilot, Cursor…) e para pessoas.
 Leia este arquivo inteiro antes de mexer no projeto. `CLAUDE.md` apenas aponta para cá.
 
-**Projeto:** site do projeto de futsal Esportval ("Fut'Art"), Brasília-DF · Next.js (App Router) + TypeScript + Tailwind v4 · deploy na Vercel · idioma **pt-BR**.
+**Projeto:** site institucional da **associação Esportval** · Next.js (App Router) + TypeScript + Tailwind v4 · deploy na Vercel · idioma **pt-BR**.
+
+### Objetivo do site (leia antes de propor qualquer mudança)
+
+A Esportval é uma **associação** (no modelo de ADEC e Liga Candanga), **não é escolinha nem clube de futebol**. O site existe para:
+
+1. **Divulgar os projetos já realizados** (`/projetos` e `/projetos/[slug]`).
+2. **Dar transparência e prestar contas** (`/transparencia`): toda parceria com o poder público, com os campos mínimos do **art. 11 da Lei 13.019/2014 (MROSC)**, documentos e situação da prestação de contas.
+
+Não adicione jogos, tabela, elenco ou inscrição de atletas. O projeto de futsal (Fut'Art) é **um** dos projetos da associação.
 
 ---
 
@@ -26,41 +35,48 @@ Leia este arquivo inteiro antes de mexer no projeto. `CLAUDE.md` apenas aponta p
 ```
 src/
   app/          rotas, layouts, loading/error, API      → pode importar tudo abaixo
-  features/<x>/ seções da página (hero, matches, …)     → components, data, lib (nunca outra feature, nunca app)
-  components/   UI reutilizável (ui/, brand/)           → lib (nunca features/app/data)
+  features/<x>/ home, projects, transparency, contact   → components, data, lib (nunca outra feature, nunca app)
+  components/   UI reutilizável (ui/, brand/, media/…)  → lib (nunca features/app/data)
   data/         conteúdo de demonstração (tipado)       → lib/types apenas
   lib/          utilitários, motion, observability      → nada acima
 ```
 
 Regras: sem dependência circular; uma feature não importa outra feature; `lib` e `data` nunca importam UI. O contrato vive em `.dependency-cruiser.cjs`.
 
-Conteúdo (jogos, elenco, notícias, tabela) é **dado de demonstração** em `src/data/*.ts`. Para trocar pelo conteúdo real do cliente edite só esses arquivos.
+Todo o conteúdo mora em `src/data/*.ts` (`site.ts`, `projects.ts`, `transparency.ts`). Para trocar pelo conteúdo real edite só esses arquivos; PDFs vão em `public/documentos/` e fotos em `public/projetos/`.
+
+### Regras da transparência
+
+- Cada parceria (`Partnership` em `lib/types.ts`) tem os campos do art. 11: instrumento, órgão, data de assinatura, organização e CNPJ, objeto, valor total e liberado, situação da prestação de contas (datas e resultado) e equipe paga com o recurso.
+- **Nunca publique dado financeiro inventado.** Registro de exemplo precisa de `illustrative: true` (aparece com o selo "Exemplo") e instrumento "nº 000". Documento sem arquivo fica sem `href` e aparece como "Em publicação".
+- A divulgação vai da assinatura até 180 dias após a prestação de contas final (Decreto 8.726/2016): não remova uma parceria antes disso.
+- Razão social e CNPJ vêm de `site.organization`; enquanto `null`, o site mostra "em atualização".
 
 ---
 
 ## 3. Design e motion (skill [design-motion-principles](https://github.com/kylezantos/design-motion-principles))
 
-Contexto do projeto = **site institucional/marketing** → lentes: **Jakub (principal)**, **Jhey (secundária, momentos de destaque como hero e placar)**, **Emil (formulários, navegação, filtros)**.
+Contexto do projeto = **site institucional** → lentes: **Jakub (principal)**, **Jhey (secundária, só no hero)**, **Emil (formulários, navegação, filtros e a transparência, que é lida com atenção)**.
 
 Regras para toda interface:
 
-- **Todo conteúdo tem skeleton.** Seção, lista, card e imagem têm estado de carregamento (`components/ui/Skeleton`): dados assíncronos ficam dentro de `<Suspense fallback={<XSkeleton/>}>`, blocos pesados em `LazyOnView`, imagens em `LazyImage`. Toda **rota nova com dados assíncronos** ganha um `loading.tsx`. Não crie `loading.tsx` na raiz: ele empurra o hero para dentro de um bloco escondido até o JS abrir. Nada "pula" na tela.
-- **Lazy loading:** imagens com `next/image` (`loading="lazy"` abaixo da dobra, `priority` só no hero), seções abaixo da dobra com `LazySection` (`next/dynamic` + `whileInView`).
-- **Entrada suave:** `opacity 0→1` + `translateY ~8px→0` + `blur 4px→0`, spring `bounce: 0`, ~450 ms. **Saída é mais sutil que a entrada** (`translateY -12px`, sem espera longa). Use `Reveal`, `Stagger`, `Presence` de `components/ui`; não crie animação solta.
-- **Progresso e carregamento:** barra de scroll, barra de transição de rota, spinner/progresso em envio de formulário e em filtros.
+- **Todo conteúdo tem skeleton.** Seção, lista, card e imagem têm estado de carregamento (`components/ui/Skeleton`): dados assíncronos ficam dentro de `<Suspense fallback={<XSkeleton/>}>` (com o cabeçalho da página fora do Suspense), blocos pesados em `LazyOnView`, imagens em `LazyImage`. **Não use `loading.tsx`**: ele coloca a página inteira dentro de um bloco escondido até o JS abrir (sem JS e para alguns robôs a página fica em branco). Nada "pula" na tela.
+- **Lazy loading:** imagens com `LazyImage` (`next/image`, lazy por padrão, `eager` só acima da dobra); blocos pesados abaixo da dobra com `LazyOnView`; entradas com `Reveal` (`whileInView`).
+- **Entrada suave:** `opacity 0→1` + `translateY ~8px→0` + `blur 4px→0`, spring `bounce: 0`, ~450 ms. **Saída é mais sutil que a entrada** (`translateY -4px`, 180 ms). Use `Reveal` (com `index` para cascata) ou as variantes `reveal`/`pop`/`page` de `lib/motion`; não crie animação solta. As variantes precisam ter **as mesmas chaves** com e sem movimento reduzido (a preferência só muda a transição, via `custom`), senão o blur do HTML do servidor fica preso.
+- **Progresso e carregamento:** barra de leitura (`ScrollProgress`), barra de transição de rota (`RouteProgress`), entrada de página em `app/template.tsx` (`PageEnter`, não anima no primeiro carregamento), spinner e barra indeterminada no envio de formulário.
 - **Frequência:** interações muito frequentes (teclado, filtros em lote) ficam instantâneas ou ≤180 ms. Botões: `scale(0.97)` em `:active`. Hover 150–200 ms. Nunca animar a partir de `scale(0)` (mínimo 0.9).
 - **Apenas** `transform`, `opacity`, `filter`/`clip-path`. Nada de animar width/height/top/left. `will-change` pontual.
 - **`prefers-reduced-motion` é obrigatório:** `MotionConfig reducedMotion="user"` + regra CSS global. Com movimento reduzido tudo continua usável (só some o movimento, o skeleton vira estático).
 - Durações, easings e springs vêm **somente** de `src/lib/motion.ts`. Não escreva números mágicos nos componentes.
 - Cores, fontes e raios vêm dos tokens em `src/app/globals.css` (`@theme`). Contraste mínimo WCAG AA.
 
-Marca: laranja (`--color-brand`), grafite/preto e branco, inspirada no escudo Fut'Art (bola + trave). Tema escuro é o padrão.
+Marca: **provisória** em `components/brand/Mark.tsx` (bola com quatro esportes, no espírito da logo antiga da associação) até o cliente enviar a logo e o timbrado originais. Paleta: laranja (`--color-brand`), grafite e branco. Tema escuro é o padrão.
 
 ---
 
 ## 4. Observabilidade
 
-Wrapper único: **`src/lib/observability`** (`reportError`, `trackEvent`, `trackTiming`). Componentes **nunca** importam SDKs diretamente.
+Wrapper único: **`src/lib/observability`** (`reportError`, `trackEvent`). Componentes **nunca** importam SDKs diretamente.
 
 | Provedor | Onde | Ativa com |
 |---|---|---|
@@ -92,7 +108,7 @@ Sem chave o provedor fica desligado **sem erro** (build e testes não exigem cre
 ## 6. Testes
 
 - **Unitário e integração:** Vitest + Testing Library (`*.test.ts(x)` ao lado do código). `npm test`, `npm run test:coverage`.
-- **E2E:** Playwright em `e2e/` (inclui axe de acessibilidade e modo reduced-motion). `npm run test:e2e`.
+- **E2E:** Playwright em `e2e/` (desktop + mobile; axe em todas as páginas, movimento reduzido, resíduos de animação e vazamento horizontal no celular). `npm run test:e2e`.
 - **Cobertura:** enviada ao Codecov pelo CI; o mínimo está em `vitest.config.ts` e `codecov.yml`.
 - Todo bug corrigido ganha um teste que falha sem a correção. Toda feature nova ganha teste de integração e, se tiver fluxo de usuário, E2E.
 
