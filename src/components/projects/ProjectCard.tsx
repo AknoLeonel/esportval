@@ -35,7 +35,7 @@ export function ProjectCard({
           ))}
           {showIllustrative && project.illustrative && <Badge tone="warn">Exemplo</Badge>}
         </div>
-        <h3 className="font-display text-3xl leading-[1.05] font-extrabold uppercase">
+        <h3 className="font-display text-3xl leading-[1.05] font-bold uppercase">
           <Link
             href={`/projetos/${project.slug}`}
             className="after:absolute after:inset-0 after:content-[''] focus-visible:outline-none"

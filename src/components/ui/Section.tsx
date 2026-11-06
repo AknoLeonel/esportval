@@ -37,7 +37,7 @@ export function Section({
           </p>
           <h2
             id={`${id}-title`}
-            className="font-display text-4xl leading-none font-extrabold tracking-tight uppercase sm:text-6xl"
+            className="font-display text-4xl leading-none font-bold tracking-tight uppercase sm:text-6xl"
           >
             {title}
           </h2>

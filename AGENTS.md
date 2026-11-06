@@ -70,7 +70,12 @@ Regras para toda interface:
 - Durações, easings e springs vêm **somente** de `src/lib/motion.ts`. Não escreva números mágicos nos componentes.
 - Cores, fontes e raios vêm dos tokens em `src/app/globals.css` (`@theme`). Contraste mínimo WCAG AA.
 
-Marca: **provisória** em `components/brand/Mark.tsx` (bola com quatro esportes, no espírito da logo antiga da associação) até o cliente enviar a logo e o timbrado originais. Paleta: laranja (`--color-brand`), grafite e branco. Tema escuro é o padrão.
+Marca: **identidade visual Esportval 2027** (manual do cliente). Os SVGs oficiais ficam em `public/marca/` (`escudo.svg` e `esportval.svg`, extraídos do vetor do manual) e são usados por `components/brand/Mark.tsx` (escudo) e `Logo.tsx` (escudo + wordmark). Não redesenhe a logo: troque só os arquivos.
+
+- **Cores:** laranja `#f8911b` (`--color-brand`, destaque de texto, botões e foco), vermelho `#d8001a` (`--color-brand-red`) e amarelo `#f6ed30` (`--color-brand-yellow`) sobre o preto (`--color-ink-950`). O vermelho não passa no AA como texto sobre o preto (3,9:1): use só em fundos, faixas e texto grande.
+- **Fontes:** Oswald nos títulos (`font-display`, no lugar da Eurostile do manual, que é comercial) e Montserrat no texto (`font-sans`). A Oswald vai até o peso 700: use `font-bold`, não `font-extrabold`.
+- **Faixas diagonais** vermelho/laranja/amarelo (`components/brand/Stripes`): elemento das peças do manual, com moderação e nunca sob texto.
+- Tema escuro é o padrão.
 
 ---
 

@@ -17,15 +17,15 @@ export default function GlobalError({ error }: { error: Error & { digest?: strin
           minHeight: "100vh",
           display: "grid",
           placeItems: "center",
-          background: "#07090d",
-          color: "#f4f1ea",
+          background: "#000000",
+          color: "#f7f7f5",
           fontFamily: "system-ui, sans-serif",
           textAlign: "center",
         }}
       >
         <div>
           <h1 style={{ fontSize: "2.5rem", margin: 0 }}>Algo saiu do jogo</h1>
-          <p style={{ color: "#a9b2bf" }}>Recarregue a página para voltar à quadra.</p>
+          <p style={{ color: "#b5b5b0" }}>Recarregue a página para voltar à quadra.</p>
         </div>
       </body>
     </html>

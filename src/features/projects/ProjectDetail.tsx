@@ -52,7 +52,7 @@ export function ProjectDetail({ project, partnership, showIllustrative }: Props)
           ))}
           {showIllustrative && project.illustrative && <Badge tone="warn">Exemplo</Badge>}
         </div>
-        <h1 className="font-display text-[clamp(2.5rem,6vw,4.5rem)] leading-[0.95] font-extrabold uppercase">
+        <h1 className="font-display text-[clamp(2.5rem,6vw,4.5rem)] leading-[0.95] font-bold uppercase">
           {project.title}
         </h1>
         <p className="mt-4 text-xl text-fg-muted">{project.summary}</p>
@@ -81,7 +81,7 @@ export function ProjectDetail({ project, partnership, showIllustrative }: Props)
           </Reveal>
           {project.results.length > 0 && (
             <Reveal>
-              <h2 className="mb-4 font-display text-3xl font-extrabold uppercase">Resultados</h2>
+              <h2 className="mb-4 font-display text-3xl font-bold uppercase">Resultados</h2>
               <ul className="grid gap-2">
                 {project.results.map((result) => (
                   <li
@@ -99,7 +99,7 @@ export function ProjectDetail({ project, partnership, showIllustrative }: Props)
           )}
           {project.gallery.length > 0 && (
             <Reveal>
-              <h2 className="mb-4 font-display text-3xl font-extrabold uppercase">Galeria</h2>
+              <h2 className="mb-4 font-display text-3xl font-bold uppercase">Galeria</h2>
               <Gallery items={project.gallery} />
             </Reveal>
           )}

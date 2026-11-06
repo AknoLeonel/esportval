@@ -20,7 +20,7 @@ export default function RouteError({
       <p className="font-display text-sm font-bold tracking-[0.28em] text-brand uppercase">
         Cartão amarelo
       </p>
-      <h1 className="font-display text-6xl font-extrabold uppercase">Algo saiu do jogo</h1>
+      <h1 className="font-display text-6xl font-bold uppercase">Algo saiu do jogo</h1>
       <p className="text-fg-muted">
         Já avisamos a equipe. Tente de novo; se persistir, volte em instantes.
       </p>

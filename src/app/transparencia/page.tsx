@@ -20,7 +20,7 @@ export const metadata: Metadata = shareMetadata({
   path: "/transparencia",
 });
 
-const heading = "mb-6 font-display text-3xl font-extrabold uppercase sm:text-4xl";
+const heading = "mb-6 font-display text-3xl font-bold uppercase sm:text-4xl";
 
 export default function TransparencyPage() {
   return (
@@ -31,7 +31,7 @@ export default function TransparencyPage() {
           Prestação de contas
           {site.illustrativeContent && <Badge tone="warn">Dados de exemplo</Badge>}
         </p>
-        <h1 className="font-display text-5xl leading-none font-extrabold tracking-tight uppercase sm:text-7xl">
+        <h1 className="font-display text-5xl leading-none font-bold tracking-tight uppercase sm:text-7xl">
           Transparência
         </h1>
         <p className="mt-4 text-lg text-fg-muted">
@@ -81,9 +81,7 @@ export default function TransparencyPage() {
         as="section"
         className="rounded-[var(--radius-card)] bg-ink-800 p-6 ring-1 ring-white/10 sm:p-8"
       >
-        <h2 className="font-display text-2xl font-extrabold uppercase">
-          Não encontrou o que procura?
-        </h2>
+        <h2 className="font-display text-2xl font-bold uppercase">Não encontrou o que procura?</h2>
         <p className="mt-2 text-fg-muted">
           Qualquer pessoa pode pedir informações sobre os recursos recebidos e os projetos
           executados.

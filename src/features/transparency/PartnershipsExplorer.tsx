@@ -163,7 +163,7 @@ export function PartnershipsExplorer({ partnerships, organization, showIllustrat
                       <span className="mt-1 block text-fg-muted">{partnership.object}</span>
                     </span>
                     <span className="flex items-center gap-4 sm:justify-end">
-                      <span className="font-display text-2xl font-extrabold tabular-nums">
+                      <span className="font-display text-2xl font-bold tabular-nums">
                         {formatBRL(partnership.totalValue)}
                       </span>
                       <span

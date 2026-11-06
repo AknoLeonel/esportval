@@ -28,9 +28,7 @@ export function About() {
       <div className="grid gap-10 lg:grid-cols-[1fr_1.2fr]">
         <Reveal>
           <blockquote className="border-l-4 border-brand pl-6">
-            <p className="font-display text-4xl leading-tight font-extrabold uppercase">
-              {site.motto}
-            </p>
+            <p className="font-display text-4xl leading-tight font-bold uppercase">{site.motto}</p>
           </blockquote>
         </Reveal>
         <ul className="grid gap-4">

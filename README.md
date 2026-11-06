@@ -30,7 +30,7 @@ Hoje os projetos e as parcerias são **exemplos** (aparecem com o selo "Exemplo"
 3. **Parcerias** em `src/data/transparency.ts`, com os campos do art. 11. PDFs em `public/documentos/` e o caminho no `href` de cada documento (sem `href` = "Em publicação").
 4. **Documentos institucionais** (estatuto, ata da diretoria, CNPJ, certidões, balanços, relatório anual) no mesmo arquivo.
 5. Apague os registros de exemplo e mude `illustrativeContent` para `false` em `src/data/site.ts`.
-6. **Marca:** troque `src/components/brand/Mark.tsx` e `src/app/icon.svg` pela logo oficial; ajuste as cores em `src/app/globals.css` (`@theme`).
+6. **Marca:** a identidade visual oficial (Esportval 2027) já está aplicada. Para atualizar a logo, troque os SVGs em `public/marca/` e `src/app/icon.svg`; as cores ficam em `src/app/globals.css` (`@theme`).
 
 ## Deploy na Vercel
 

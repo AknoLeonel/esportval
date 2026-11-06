@@ -25,7 +25,7 @@ export async function Summary() {
           className="flex flex-col-reverse rounded-2xl bg-ink-800 p-5 ring-1 ring-white/10"
         >
           <dt className="mt-1 text-sm text-fg-muted">{item.label}</dt>
-          <dd className="font-display text-3xl font-extrabold tabular-nums">{item.value}</dd>
+          <dd className="font-display text-3xl font-bold tabular-nums">{item.value}</dd>
         </Reveal>
       ))}
     </dl>

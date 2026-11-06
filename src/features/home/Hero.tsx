@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { Mark } from "@/components/brand/Mark";
+import { Stripes } from "@/components/brand/Stripes";
 import { ButtonLink } from "@/components/ui/Button";
 import { CountUp } from "@/components/ui/CountUp";
 import { Reveal } from "@/components/ui/Reveal";
@@ -41,7 +42,7 @@ export async function Impact() {
             className="flex flex-col-reverse rounded-2xl bg-white/[0.04] px-5 py-5 ring-1 ring-white/10"
           >
             <dt className="mt-1 text-sm text-fg-muted">{item.label}</dt>
-            <dd className="font-display text-5xl leading-none font-extrabold text-fg">
+            <dd className="font-display text-5xl leading-none font-bold text-fg">
               <CountUp value={item.value} />
             </dd>
           </div>
@@ -66,7 +67,7 @@ export function Hero() {
       <CourtLines className="absolute inset-0 -z-10 size-full text-white/[0.06] [mask-image:radial-gradient(ellipse_at_30%_40%,black,transparent_75%)]" />
       <div
         aria-hidden="true"
-        className="absolute -top-40 -left-40 -z-10 size-[34rem] rounded-full bg-[radial-gradient(closest-side,rgb(255_106_19/0.2),transparent)]"
+        className="absolute -top-40 -left-40 -z-10 size-[34rem] rounded-full bg-[radial-gradient(closest-side,rgb(248_145_27/0.2),transparent)]"
       />
       <div className="mx-auto w-full max-w-6xl px-5 sm:px-8">
         <div className="grid gap-12 lg:grid-cols-[1.5fr_1fr] lg:items-center">
@@ -80,7 +81,7 @@ export function Hero() {
             <Reveal on="mount" index={1}>
               <h1
                 id="hero-title"
-                className="font-display text-[clamp(2.75rem,7vw,5.25rem)] leading-[0.92] font-extrabold tracking-tight uppercase"
+                className="font-display text-[clamp(2.75rem,7vw,5.25rem)] leading-[0.92] font-bold tracking-tight uppercase"
               >
                 Projetos esportivos <span className="block text-brand">com as contas abertas.</span>
               </h1>
@@ -96,12 +97,13 @@ export function Hero() {
             </Reveal>
           </div>
           <Reveal on="mount" index={3} className="hidden justify-center lg:flex">
-            <div className="relative">
+            <div className="relative isolate">
+              <Stripes className="absolute -right-32 -bottom-24 -z-10 h-[26rem] w-[34rem] [mask-image:radial-gradient(closest-side_at_55%_55%,black_45%,transparent)]" />
               <div
                 aria-hidden="true"
-                className="absolute inset-0 rounded-full bg-[radial-gradient(closest-side,rgb(255_106_19/0.35),transparent)] scale-125"
+                className="absolute inset-0 rounded-full bg-[radial-gradient(closest-side,rgb(248_145_27/0.3),transparent)] scale-125"
               />
-              <Mark className="relative size-72 drop-shadow-[0_24px_48px_rgb(0_0_0/0.5)]" />
+              <Mark eager className="relative size-80 drop-shadow-[0_24px_48px_rgb(0_0_0/0.6)]" />
             </div>
           </Reveal>
         </div>
