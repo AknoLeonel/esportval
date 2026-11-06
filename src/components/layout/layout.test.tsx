@@ -10,6 +10,7 @@ vi.mock("next/navigation", () => ({
 
 const { Logo } = await import("../brand/Logo");
 const { Mark } = await import("../brand/Mark");
+const { StripeBar, Stripes } = await import("../brand/Stripes");
 const { Footer } = await import("./Footer");
 const { Header } = await import("./Header");
 
@@ -113,17 +114,38 @@ describe("Footer", () => {
 });
 
 describe("marca", () => {
-  it("bola multiesportiva é decorativa por padrão e acessível com título", () => {
+  it("escudo oficial é decorativo por padrão e acessível com título", () => {
     const { container, rerender } = render(<Mark />);
-    expect(container.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
+    const img = container.querySelector("img");
+    expect(img).toHaveAttribute("src", "/marca/escudo.svg");
+    expect(img).toHaveAttribute("alt", "");
+    expect(img).toHaveAttribute("aria-hidden", "true");
+    expect(img).toHaveAttribute("loading", "lazy");
     rerender(<Mark title="Esportval" />);
     expect(screen.getByRole("img", { name: "Esportval" })).toBeInTheDocument();
   });
 
-  it("logo tem versão compacta sem texto", () => {
+  it("logo usa o wordmark oficial e tem versão compacta sem texto", () => {
     const { rerender } = render(<Logo />);
-    expect(screen.getByText("Esportval")).toBeInTheDocument();
+    expect(screen.getByAltText("Esportval")).toHaveAttribute("src", "/marca/esportval.svg");
     rerender(<Logo compact />);
-    expect(screen.queryByText("Esportval")).not.toBeInTheDocument();
+    expect(screen.queryByAltText("Esportval")).not.toBeInTheDocument();
+  });
+
+  it("logo do header carrega sem lazy (acima da dobra)", () => {
+    const { container } = render(<Logo eager />);
+    for (const img of container.querySelectorAll("img")) {
+      expect(img).toHaveAttribute("loading", "eager");
+    }
+  });
+
+  it("faixas da marca são decorativas", () => {
+    const { container } = render(
+      <>
+        <Stripes />
+        <StripeBar />
+      </>,
+    );
+    for (const el of container.children) expect(el).toHaveAttribute("aria-hidden", "true");
   });
 });

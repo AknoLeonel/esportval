@@ -46,7 +46,7 @@ export function Header({ nav, cta }: { nav: readonly NavItem[]; cta: NavItem }) 
       >
         <div className="mx-auto flex h-full max-w-6xl items-center justify-between px-5 sm:px-8">
           <Link href="/" aria-label="Esportval — início" onClick={() => setOpen(false)}>
-            <Logo />
+            <Logo eager />
           </Link>
 
           <nav aria-label="Principal" className="hidden items-center gap-1 lg:flex">

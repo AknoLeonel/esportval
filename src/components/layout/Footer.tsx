@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Logo } from "@/components/brand/Logo";
+import { StripeBar } from "@/components/brand/Stripes";
 import { orField } from "@/lib/organization";
 
 type FooterProps = {
@@ -11,7 +12,8 @@ type FooterProps = {
 
 export function Footer({ nav, instagram, motto, organization }: FooterProps) {
   return (
-    <footer className="border-t border-white/10 bg-ink-900">
+    <footer className="bg-ink-900">
+      <StripeBar />
       <div className="mx-auto grid max-w-6xl gap-10 px-5 py-14 sm:px-8 md:grid-cols-[1.4fr_1fr_1fr]">
         <div>
           <Logo />

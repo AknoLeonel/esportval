@@ -112,7 +112,7 @@ export function ContactForm({ instagramUrl }: { instagramUrl: string }) {
             >
               ✓
             </motion.div>
-            <h3 className="mt-6 font-display text-4xl font-extrabold uppercase">
+            <h3 className="mt-6 font-display text-4xl font-bold uppercase">
               Recebemos sua mensagem!
             </h3>
             <p className="mx-auto mt-3 max-w-sm text-fg-muted">

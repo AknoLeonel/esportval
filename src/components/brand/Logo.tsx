@@ -1,20 +1,37 @@
+import Image from "next/image";
 import { cn } from "@/lib/cn";
 import { Mark } from "./Mark";
 
-/** Marca + wordmark. Usado no header e no rodapé. */
-export function Logo({ className, compact = false }: { className?: string; compact?: boolean }) {
+/** Versão só com o texto, sobre a faixa preta (página 5 do manual): funciona sobre qualquer fundo. */
+const WORDMARK = { src: "/marca/esportval.svg", width: 978, height: 165 } as const;
+
+/**
+ * Escudo + wordmark oficial. Usado no header e no rodapé; `compact` mostra só o escudo.
+ * `eager` carrega sem lazy: só no header, que está acima da dobra.
+ */
+export function Logo({
+  className,
+  compact = false,
+  eager = false,
+}: {
+  className?: string;
+  compact?: boolean;
+  eager?: boolean;
+}) {
   return (
     <span className={cn("inline-flex items-center gap-3", className)}>
-      <Mark className="size-11 shrink-0" />
+      <Mark className="size-12 shrink-0" eager={eager} />
       {!compact && (
-        <span className="leading-none">
-          <span className="block font-display text-2xl font-extrabold tracking-wide uppercase">
-            Esportval
-          </span>
-          <span className="block pt-0.5 font-display text-[0.7rem] font-semibold tracking-[0.3em] text-brand uppercase">
-            Projetos esportivos
-          </span>
-        </span>
+        <Image
+          src={WORDMARK.src}
+          width={WORDMARK.width}
+          height={WORDMARK.height}
+          alt="Esportval"
+          loading={eager ? "eager" : "lazy"}
+          unoptimized
+          draggable={false}
+          className="h-7 w-auto select-none"
+        />
       )}
     </span>
   );

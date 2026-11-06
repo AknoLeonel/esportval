@@ -49,7 +49,7 @@ export function RouteProgress() {
           aria-hidden="true"
           data-testid="route-progress"
           data-phase={phase}
-          className="fixed inset-x-0 top-0 z-[61] h-[3px] origin-left bg-brand-300 shadow-[0_0_12px_rgb(255_160_102/0.7)] will-change-transform"
+          className="fixed inset-x-0 top-0 z-[61] h-[3px] origin-left bg-brand-300 shadow-[0_0_12px_rgb(251_181_99/0.7)] will-change-transform"
           initial={{ scaleX: 0, opacity: 1 }}
           animate={
             phase === "loading"

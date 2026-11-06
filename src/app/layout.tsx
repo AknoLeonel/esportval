@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Barlow, Barlow_Condensed } from "next/font/google";
+import { Montserrat, Oswald } from "next/font/google";
 import { Suspense } from "react";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
@@ -9,17 +9,16 @@ import { MotionProvider } from "@/components/ui/Providers";
 import { headerCta, nav, site } from "@/data/site";
 import "./globals.css";
 
-const display = Barlow_Condensed({
+// Fontes variáveis: Oswald (200–700) substitui a Eurostile do manual; Montserrat é a secundária.
+const display = Oswald({
   subsets: ["latin"],
-  weight: ["500", "600", "700", "800"],
-  variable: "--font-barlow-condensed",
+  variable: "--font-oswald",
   display: "swap",
 });
 
-const sans = Barlow({
+const sans = Montserrat({
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  variable: "--font-barlow",
+  variable: "--font-montserrat",
   display: "swap",
 });
 
@@ -40,7 +39,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#07090d",
+  themeColor: "#000000",
   colorScheme: "dark",
 };
 

@@ -26,7 +26,7 @@ export default function ProjectsPage() {
         <p className="mb-3 flex items-center gap-3 font-display text-sm font-bold tracking-[0.28em] text-brand uppercase">
           <span aria-hidden="true" className="h-px w-8 bg-brand" />O que fazemos
         </p>
-        <h1 className="font-display text-5xl leading-none font-extrabold tracking-tight uppercase sm:text-7xl">
+        <h1 className="font-display text-5xl leading-none font-bold tracking-tight uppercase sm:text-7xl">
           Projetos
         </h1>
         <p className="mt-4 text-lg text-fg-muted">
